@@ -99,7 +99,7 @@ public class postDao {
     {
         List<post> list= new ArrayList<>();
         try{
-            String q= "select * from post where cid= ?";
+            String q= "select * from post where pcid= ?";
             PreparedStatement pstmt= con.prepareStatement(q);
             pstmt.setInt(1, cid);
             ResultSet set=  pstmt.executeQuery();

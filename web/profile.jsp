@@ -43,10 +43,18 @@
                 transition: 0.2s;
                 /* color: white; */
                 transform: scale(1.05);
-            }        
+            }      
+            .ddr{
+                background-color: #ba68c8;
+                color: white
+            }
+            .ddr:hover{
+                 background-color: #ba68c8;
+                color: white
+            }
         </style>
     </head>
-    <body>
+    <body style="background-color: whitesmoke">
         <nav class="navbar navbar-expand-lg navbar-dark bg-custom">
             <a class="navbar-brand" href="index.jsp"><span class="fa fa-asterisk mr-3"></span>Tech Blog</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -216,15 +224,19 @@
                 <div class="row">
                     <div class="col-md-4 mb-3">
                         <div class="list-group text-center">
-                            <a href="#" class="list-group-item list-group-item-action active">
-                              All posts
-                            </a>
+                            <button class="btn btn-light ddr" id="0" onClick="reply_click(this.id)">
+                                All posts
+                            </button>
                             <%
                                 postDao d= new postDao(ConnectionProvider.getConnection());
                                 ArrayList<category> l= d.getCategories();
-                                for(category c: l){
+                                int cf= 0;
+                                for(category c: l){                               
                             %>
-                            <a href="#" class="list-group-item list-group-item-action"><%= c.getName()%></a>
+                            <button class="btn btn-light" id="<%= c.getCid() %>" onClick="reply_click(this.id)">
+                                <%= c.getName()%>
+                            </button>
+                            
                              <%
                                  }
                              %>
@@ -232,29 +244,185 @@
                     </div>
                     <div class="col-md-8">
                         <div class="container text-center">
-                            <div class="row">
-                            
-                                <%
-                                    postDao ds= new postDao(ConnectionProvider.getConnection());
-                                    List<post> pst= ds.getAllPosts();
-                                    for(post c: pst){
-                                %>
-                                <div class="col-md-6">
-                                    <div class="card shadow rounded mb-3" id="blog-card" >
-
-                                            <div class="card-title bg-custom text-white m-0" >
-                                                <h5 class=""><%= c.getPtitle()%></h5>
-                                            </div>  
-                                                <img src="pics/<%= c.getPpic() %>" style="height: 200px; background-image:url('https://th.bing.com/th/id/OIP.JZGU7zkhMrBFGBhcjYDL8QHaEK?pid=ImgDet&rs=1');" alt=""/>
-                                            <div class="card-body">                                                              
-                                                <p class="card-text"><%= c.getPcontent() %></p>
-                                                <a href="#" class="btn bg-custom text-white">Read more</a>
-                                            </div>
+                            <div class="row" id="allposts">
+                               
+                                    <%
+                                        postDao ds= new postDao(ConnectionProvider.getConnection());
+                                        List<post> pst= ds.getAllPosts();
+                                        for(post c: pst){
+                                    %>
+                                    <div class="col-md-6">
+                                        <div class="card shadow rounded mb-3" id="blog-card" >
+                                            <!--<p>All posts</p>-->
+                                                <div class="card-title bg-custom text-white m-0" >
+                                                    <h5 class=""><%= c.getPtitle()%></h5>
+                                                </div>  
+                                                    <img src="pics/<%= c.getPpic() %>" style="height: 200px; background-image:url('https://th.bing.com/th/id/OIP.JZGU7zkhMrBFGBhcjYDL8QHaEK?pid=ImgDet&rs=1');" alt=""/>
+                                                <div class="card-body">                                                              
+                                                    <p class="card-text"><%= c.getPcontent() %></p>
+                                                    <a href="#" class="btn bg-custom text-white">Read more</a>
+                                                </div>
+                                        </div>
                                     </div>
+                                    <%
+                                        }
+                                    %>
                                 </div>
-                                 <%
-                                     }
-                                 %>
+                                <div id="bycid" style="display: none">
+                                    <%   
+                                        postDao dss= new postDao(ConnectionProvider.getConnection());
+                                        List<post> psti= dss.getPostByCid(1);
+                                        int ct1=0;
+                                        for(post c: psti){
+                                        ct1= ct1+1;
+                                    %>
+                                    <div class="col-md-6">
+                                        <div class="card shadow rounded mb-3" id="blog-card" >
+
+                                                <div class="card-title bg-custom text-white m-0" >
+                                                    <h5 class=""><%= c.getPtitle()%></h5>
+                                                </div>  
+                                                    <img src="pics/<%= c.getPpic() %>" style="height: 200px; background-image:url('https://th.bing.com/th/id/OIP.JZGU7zkhMrBFGBhcjYDL8QHaEK?pid=ImgDet&rs=1');" alt=""/>
+                                                <div class="card-body">                                                              
+                                                    <p class="card-text"><%= c.getPcontent() %></p>
+                                                    <a href="#" class="btn bg-custom text-white">Read more</a>
+                                                </div>
+                                        </div>
+                                    </div>
+                                    <%
+                                        }
+                                        if(ct1==0)
+                                        {
+                                    %>
+                                    <div class="display-3">Sorry nothing to show yet... </div>
+                                    <%
+                                        }
+                                    %>
+                                </div>
+                                <div  class="row" id="bycid2" style="display: none">
+                                    <%   
+                                        postDao dss2= new postDao(ConnectionProvider.getConnection());
+                                        List<post> psti2= dss.getPostByCid(2);
+                                        int ct2=0;
+                                        for(post c: psti2){
+                                        ct2= ct2+1;
+                                    %>
+                                    <div class="col-md-6">
+                                        <div class="card shadow rounded mb-3" id="blog-card" >
+
+                                                <div class="card-title bg-custom text-white m-0" >
+                                                    <h5 class=""><%= c.getPtitle()%></h5>
+                                                </div>  
+                                                    <img src="pics/<%= c.getPpic() %>" style="height: 200px; background-image:url('https://th.bing.com/th/id/OIP.JZGU7zkhMrBFGBhcjYDL8QHaEK?pid=ImgDet&rs=1');" alt=""/>
+                                                <div class="card-body">                                                              
+                                                    <p class="card-text"><%= c.getPcontent() %></p>
+                                                    <a href="#" class="btn bg-custom text-white">Read more</a>
+                                                </div>
+                                        </div>
+                                    </div>
+                                    <%
+                                        }
+                                        if(ct2==0)
+                                        {
+                                    %>
+                                    <div class="display-3">Sorry nothing to show yet... </div>
+                                    <%
+                                        }
+                                    %>
+                                </div>
+                                <div id="bycid3" style="display: none">
+                                    <%   
+                                        postDao dss3= new postDao(ConnectionProvider.getConnection());
+                                        List<post> psti3= dss.getPostByCid(3);
+                                        int ct3=0;
+                                        for(post c: psti3){
+                                        ct3= ct3+1;
+                                    %>
+                                    <div class="col-md-6">
+                                        <div class="card shadow rounded mb-3" id="blog-card" >
+
+                                                <div class="card-title bg-custom text-white m-0" >
+                                                    <h5 class=""><%= c.getPtitle()%></h5>
+                                                </div>  
+                                                    <img src="pics/<%= c.getPpic() %>" style="height: 200px; background-image:url('https://th.bing.com/th/id/OIP.JZGU7zkhMrBFGBhcjYDL8QHaEK?pid=ImgDet&rs=1');" alt=""/>
+                                                <div class="card-body">                                                              
+                                                    <p class="card-text"><%= c.getPcontent() %></p>
+                                                    <a href="#" class="btn bg-custom text-white">Read more</a>
+                                                </div>
+                                        </div>
+                                    </div>
+                                    <%
+                                        }
+                                        if(ct3==0)
+                                        {
+                                    %>
+                                    <div class="display-3">Sorry nothing to show yet... </div>
+                                    <%
+                                        }
+                                    %>
+                                </div>
+                                <div id="bycid4" style="display: none">
+                                    <%   
+                                        postDao dss4= new postDao(ConnectionProvider.getConnection());
+                                        List<post> psti4= dss.getPostByCid(4);
+                                        int ct4=0;
+                                        for(post c: psti4){
+                                        ct4= ct4+1;
+                                    %>
+                                    <div class="col-md-6">
+                                        <div class="card shadow rounded mb-3" id="blog-card" >
+
+                                                <div class="card-title bg-custom text-white m-0" >
+                                                    <h5 class=""><%= c.getPtitle()%></h5>
+                                                </div>  
+                                                    <img src="pics/<%= c.getPpic() %>" style="height: 200px; background-image:url('https://th.bing.com/th/id/OIP.JZGU7zkhMrBFGBhcjYDL8QHaEK?pid=ImgDet&rs=1');" alt=""/>
+                                                <div class="card-body">                                                              
+                                                    <p class="card-text"><%= c.getPcontent() %></p>
+                                                    <a href="#" class="btn bg-custom text-white">Read more</a>
+                                                </div>
+                                        </div>
+                                    </div>
+                                    <%
+                                        }
+                                        if(ct4==0)
+                                        {
+                                    %>
+                                    <div class="display-3">Sorry nothing to show yet... </div>
+                                    <%
+                                        }
+                                    %>
+                                </div>
+                                <div id="bycid5" style="display: none">
+                                    <%   
+                                        postDao dss5= new postDao(ConnectionProvider.getConnection());
+                                        List<post> psti5= dss.getPostByCid(5);
+                                        int ct5=0;
+                                        for(post c: psti5){
+                                        ct5= ct5+1;
+                                    %>
+                                    <div class="col-md-6">
+                                        <div class="card shadow rounded mb-3" id="blog-card" >
+
+                                                <div class="card-title bg-custom text-white m-0" >
+                                                    <h5 class=""><%= c.getPtitle()%></h5>
+                                                </div>  
+                                                    <img src="pics/<%= c.getPpic() %>" style="height: 200px; background-image:url('https://th.bing.com/th/id/OIP.JZGU7zkhMrBFGBhcjYDL8QHaEK?pid=ImgDet&rs=1');" alt=""/>
+                                                <div class="card-body">                                                              
+                                                    <p class="card-text"><%= c.getPcontent() %></p>
+                                                    <a href="#" class="btn bg-custom text-white">Read more</a>
+                                                </div>
+                                        </div>
+                                    </div>
+                                    <%
+                                        }
+                                        if(ct5==0)
+                                        {
+                                    %>
+                                    <div class="display-3">Sorry nothing to show yet... </div>
+                                    <%
+                                        }
+                                    %>
+                                </div>
                             </div>
                         </div>
                         
@@ -296,8 +464,150 @@
                         $(this).text("Edit profile");
                     }
                     
+                    
                 });
+                
+                $('#0').click(function(){
+//                    alert("1 clicked");
+                        $("#allposts").show();
+                        $("#bycid").hide();
+                        $("#bycid2").hide(); 
+                        $("#bycid3").hide();
+                        $("#bycid4").hide();
+                        $("#bycid5").hide();
+                        $("#0").addClass('ddr');
+                        $("#0").removeClass('btn-light');
+                        $("#4").addClass('btn-light');
+                        $("#3").addClass('btn-light');
+                        $("#2").addClass('btn-light');
+                        $("#1").addClass('btn-light');
+                        $("#5").addClass('btn-light');
+                        $("#2").removeClass('ddr');
+                        $("#3").removeClass('ddr');
+                        $("#4").removeClass('ddr');
+                        $("#5").removeClass('ddr');
+                        $("#1").removeClass('ddr');
+                });
+                
+                $('#1').click(function(){
+//                    alert("1 clicked");
+                        $("#allposts").hide();
+                        $("#bycid").show();
+                        $("#bycid2").hide(); 
+                        $("#bycid3").hide();
+                        $("#bycid4").hide();
+                        $("#bycid5").hide();
+                        $("#1").addClass('ddr');
+                        $("#1").removeClass('btn-light');
+                        $("#4").addClass('btn-light');
+                        $("#3").addClass('btn-light');
+                        $("#2").addClass('btn-light');
+                        $("#5").addClass('btn-light');
+                        $("#0").addClass('btn-light');
+                        $("#2").removeClass('ddr');
+                        $("#3").removeClass('ddr');
+                        $("#4").removeClass('ddr');
+                        $("#5").removeClass('ddr');
+                        $("#0").removeClass('ddr');
+                });
+               
+                $('#2').click(function(){
+//                    alert("2 clicked");                    
+                        $("#allposts").hide();
+                        $("#bycid").hide();
+                        $("#bycid2").show(); 
+                        $("#bycid3").hide();
+                        $("#bycid4").hide();
+                        $("#bycid5").hide();
+                        $("#2").addClass('ddr');
+                        $("#2").removeClass('btn-light');
+                        $("#4").addClass('btn-light');
+                        $("#3").addClass('btn-light');
+                        $("#5").addClass('btn-light');
+                        $("#1").addClass('btn-light');
+                        $("#0").addClass('btn-light');
+                        $("#1").removeClass('ddr');
+                        $("#3").removeClass('ddr');
+                        $("#4").removeClass('ddr');
+                        $("#5").removeClass('ddr');
+                        $("#0").removeClass('ddr');
+                });
+                
+               
+                
+                $('#3').click(function(){
+//                    alert("3 clicked")                    
+                        $("#allposts").hide();
+                        $("#bycid").hide();
+                        $("#bycid2").hide();
+                        $("#bycid3").show();
+                        $("#bycid4").hide();
+                        $("#bycid5").hide(); 
+                        $("#3").addClass('ddr');
+                        $("#3").removeClass('btn-light');
+                        $("#4").addClass('btn-light');
+                        $("#5").addClass('btn-light');
+                        $("#2").addClass('btn-light');
+                        $("#1").addClass('btn-light');
+                        $("#0").addClass('btn-light');
+                        $("#2").removeClass('ddr');
+                        $("#1").removeClass('ddr');
+                        $("#4").removeClass('ddr');
+                        $("#5").removeClass('ddr');
+                        $("#0").removeClass('ddr');
+                });
+                
+                
+                
+                $('#4').click(function(){
+//                    alert("4 clicked");                    
+                        $("#allposts").hide();
+                        $("#bycid").hide();
+                        $("#bycid2").hide();
+                        $("#bycid3").hide();
+                        $("#bycid4").show();  
+                        $("#bycid5").hide();
+                        $("#4").addClass('ddr');
+                        $("#4").removeClass('btn-light');
+                        $("#5").addClass('btn-light');
+                        $("#3").addClass('btn-light');
+                        $("#2").addClass('btn-light');
+                        $("#1").addClass('btn-light');
+                        $("#0").addClass('btn-light');
+                        $("#2").removeClass('ddr');
+                        $("#3").removeClass('ddr');
+                        $("#1").removeClass('ddr');
+                        $("#5").removeClass('ddr');
+                        $("#0").removeClass('ddr');
+                });
+                
+                    
+                $('#5').click(function(){
+//                    alert("5 clicked");                    
+                        $("#allposts").hide();
+                        $("#bycid").hide();
+                        $("#bycid2").hide();
+                        $("#bycid3").hide();
+                        $("#bycid4").hide();
+                        $("#bycid5").show();
+                        $("#5").addClass('ddr');
+                        $("#5").removeClass('btn-light');
+                        $("#4").addClass('btn-light');
+                        $("#3").addClass('btn-light');
+                        $("#2").addClass('btn-light');
+                        $("#1").addClass('btn-light');
+                        $("#0").addClass('btn-light');
+                        $("#2").removeClass('ddr');
+                        $("#3").removeClass('ddr');
+                        $("#4").removeClass('ddr');
+                        $("#1").removeClass('ddr');
+                        $("#0").removeClass('ddr');
+                });
+                
+                  
+
             });
+           
         </script>
         
     </body>
